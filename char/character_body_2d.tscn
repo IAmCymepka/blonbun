@@ -1,0 +1,160 @@
+[gd_scene load_steps=15 format=3 uid="uid://vb0soxdiaowd"]
+
+[ext_resource type="Texture2D" uid="uid://b1n7gv2o5kctj" path="res://char/body1.png" id="1_i6pbl"]
+[ext_resource type="Script" path="res://char/character_body_2d.gd" id="1_wxss8"]
+[ext_resource type="Texture2D" uid="uid://bk5wn4vlx4xud" path="res://char/body2.png" id="2_lsrsw"]
+[ext_resource type="Texture2D" uid="uid://b5s3jmweryv0c" path="res://char/head1.png" id="3_lyb0y"]
+[ext_resource type="Texture2D" uid="uid://c2xvyibvcssch" path="res://char/head2.png" id="4_g7vet"]
+[ext_resource type="Texture2D" uid="uid://c1bsaskc2ujmb" path="res://char/head3.png" id="5_c5c51"]
+[ext_resource type="Texture2D" uid="uid://bjjk73irnnah5" path="res://char/head4.png" id="6_cq10n"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4n2fb"]
+radius = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n2cua"]
+radius = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3q0rt"]
+radius = 32.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eo2cy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_cq10n")
+}],
+"loop": true,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_lyb0y")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_g7vet")
+}],
+"loop": true,
+"name": &"puff",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_c5c51")
+}],
+"loop": true,
+"name": &"whoops",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nsqtj"]
+atlas = ExtResource("1_i6pbl")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i8fe0"]
+atlas = ExtResource("2_lsrsw")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w1o7y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nsqtj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_lsrsw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i8fe0")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_i6pbl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_lsrsw")
+}],
+"loop": true,
+"name": &"new_animation_1",
+"speed": 10.0
+}]
+
+[node name="bunni!" type="CharacterBody2D"]
+top_level = true
+z_index = 10
+collision_layer = 8
+script = ExtResource("1_wxss8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(32, 32)
+shape = SubResource("CircleShape2D_4n2fb")
+
+[node name="hhit" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hhit"]
+visible = false
+position = Vector2(32, 32)
+shape = SubResource("CircleShape2D_n2cua")
+debug_color = Color(0.964979, 0, 0.489491, 0.42)
+
+[node name="Area2D2" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+visible = false
+position = Vector2(32, 32)
+shape = SubResource("CircleShape2D_3q0rt")
+debug_color = Color(1.41986e-06, 0.650939, 0.0534564, 0.42)
+
+[node name="sprites" type="Node2D" parent="."]
+position = Vector2(32, 32)
+
+[node name="head" type="AnimatedSprite2D" parent="sprites"]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_eo2cy")
+animation = &"die"
+autoplay = "idle"
+
+[node name="body" type="AnimatedSprite2D" parent="sprites"]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_w1o7y")
+animation = &"new_animation"
+autoplay = "new_animation"
+
+[node name="iframes" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[node name="bframes" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="dead" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(212, 304)
+scale = Vector2(87.6, 31.2)
+
+[connection signal="timeout" from="iframes" to="." method="_on_iframes_timeout"]
+[connection signal="timeout" from="bframes" to="." method="_on_bframes_timeout"]
+[connection signal="timeout" from="dead" to="." method="_on_dead_timeout"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

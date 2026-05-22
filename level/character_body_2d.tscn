@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://bn1lbqtugseas"]
+
+[ext_resource type="Script" path="res://level/character_body_2d.gd" id="1_6xta8"]
+[ext_resource type="Texture2D" uid="uid://pf0f4ygboq2u" path="res://level/bloon.png" id="1_kgmep"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xqauj"]
+radius = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wa8vc"]
+radius = 32.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+z_index = 1
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_6xta8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(32, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("1_kgmep")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(32, 32)
+shape = SubResource("CircleShape2D_xqauj")
+debug_color = Color(1, 1, 0, 0.419608)
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(32, 32)
+shape = SubResource("CircleShape2D_wa8vc")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(32, 32)
+scale = Vector2(4, 4)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.01
+one_shot = true
+
+[connection signal="screen_exited" from="VisibleOnScreenEnabler2D" to="." method="_on_visible_on_screen_enabler_2d_screen_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
